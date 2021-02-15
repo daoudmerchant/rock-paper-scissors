@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Rock Paper Scissors</title>
+    </head>
+    <body>
+        <script>
+            // Create variable 'playerSelection' for player selection
+            // Create variable 'winner' for who wins
+            // Create variable 'winningSelection' for whichever selection wins
+            // Ask player for a selection and put answer in 'playerSelection'
+
+            let playerSelection = prompt('Rock, paper or scissors?', '');
+            let win_lose;
+            let endStatement;
+            console.log(result(playerSelection.toLowerCase(), computerSelection()))
+
+
+            // Randomly generate a selection and put answer in 'computerSelection'
+
+            // Compare 'playerSelection' to 'computerSelection':
+            //   if one person has rock and the other paper, the player wins if they have paper
+            //   if one person has scissors and the other rock, the player wins if they have rock
+            //   if one person has paper and the other scissors, the player wins if they have scissors
+
+            function result(player, computer) {
+                if (player + computer == ("rockrock" || "paperpaper" || "scissorsscissors")) {
+                    return "It's a tie!";
+                } else if (player + computer == ("paperrock" || "rockpaper")) {
+                    win_lose = (player === "paper") ? "win" : "lose";
+                    endStatement = "Rock wraps paper";
+                } else if (player + computer == ("rockscissors" || "scissorsrock")) {
+                    win_lose = (player === "rock") ? "win" : "lose";
+                    endStatement = "Rock blunts scissors";
+                } else {
+                    win_lose = (player === "scissors") ? "win" : "lose";
+                    endStatement = "Scissors cut paper";
+                }
+                return `You ${win_lose}! ${endStatement}.`;
+            }
+
+            function round(player) {
+                let computer = computerSelection();
+                console.log("The computer chooses " + computer + ".");
+                console.log( result(player, computer) );
+            }
+
+            function computerSelection() {
+                let randomSelector = Math.floor(Math.random() * 3) + 1;
+                if (randomSelector === 1) { return 'rock' }
+                else if (randomSelector === 2) { return 'paper' }
+                else { return 'scissors' }
+            }
+
+            // Let the player know if they are the 'winner':
+            //   if they are, return 'You win!'
+            //   if not, return 'You lose!'
+            // Return  "'winningSelection' beats [the other selection]"
+        </script>
+    </body>
+</html>
