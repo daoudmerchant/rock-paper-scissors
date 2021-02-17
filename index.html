@@ -7,12 +7,7 @@
     <body>
         <script>
 
-
-            // Ask the user for rock, paper or scissors and put in 'playerSelection,'
-
-
-
-            // Randomly generate rock, paper or scissors and put in 'computerSelection'
+            // 'Helper' Functions
 
             let capitalize = (string) => (string.charAt(0)).toUpperCase() + string.slice(1);
 
@@ -23,91 +18,92 @@
                 else { return 'scissors' }
             }
 
+            // 5 round game function
+
             function game() {
-                const playerSelection = prompt('Rock, paper or scissors?', '');
-                const computerSelection = computerPlay()
+
+                // Round function
 
                 function playRound(playerSelection, computerSelection) {
-                    let playerSelectionLow = playerSelection.toLowerCase()
                     let win_lose = 'lose';
                     let winner = capitalize(computerSelection)
-                    let loser = playerSelectionLow;
-                    if (playerSelectionLow === computerSelection) {
+                    let loser = playerSelection;
+                    if (playerSelection === computerSelection) {
                         return "It's a tie! You both chose " + computerSelection + ".";
-                    } else if (playerSelectionLow === 'rock' && computerSelection === 'scissors' ||
-                            playerSelectionLow === 'scissors' && computerSelection === 'paper' ||
-                            playerSelectionLow === 'paper' && computerSelection === 'rock') {
+                    } else if (playerSelection === 'rock' && computerSelection === 'scissors' ||
+                            playerSelection === 'scissors' && computerSelection === 'paper' ||
+                            playerSelection === 'paper' && computerSelection === 'rock') {
                         win_lose = 'win';
-                        winner = capitalize(playerSelectionLow);
+                        winner = capitalize(playerSelection);
                         loser = computerSelection;
+                        playerScore += 1;
+                    } else {
+                        computerScore += 1;
                     }
-                    return `You ${win_lose}! ${winner} beats ${loser}.`;
+                    return `You ${win_lose} this round! ${winner} beats ${loser}.`;
                 }
-                
 
-                console.log('The computer has chosen ' + computerSelection + '.');
-                console.log(playRound(playerSelection, computerSelection));
+                //
+
+                let playerScore = 0, computerScore = 0;
+                let roundCount;
+                for (roundCount = 1; roundCount <=5; roundCount++) {
+                    console.log('Round ' + roundCount + ':');
+                    const playerSelection = (prompt('Rock, paper or scissors?', '')).toLowerCase();
+                    const computerSelection = computerPlay();
+                    console.log("You chose " + playerSelection);
+                    console.log("The computer chooses " + computerSelection);
+                    console.log(playRound(playerSelection, computerSelection));
+                    console.log(`Score:\nPlayer: ${playerScore}\nComputer: ${computerScore}`);
+                }
+                let overallWinner = (playerScore > computerScore) ? "You" : "The computer";
+                let s = (overallWinner === "The computer") ? "s" : "";
+                return `${overallWinner} win${s} the game of ${roundCount - 1} rounds!`
             }
-        
-            // (1) requires:
-            // - whether the player and computer are the same (to tie)
-            // and if not: 
-            // - the player's input (rock, paper or scissors)
-            // - whether the computer's input is scissors, rock or paper (for player to win)
-            // If the player has neither tied nor won, they have lost.
 
-            // (2) requires:
-            // - the selection pairing **without knowing who won**
-            // OR
-            // - the winner's choice and the loser's choice **without knowing who chose which**
+            // Function invocation (to console)
 
-            // (1)
-            // if the player and computer choose the same option, it's a tie, otherwise:
-            // if the player chooses paper they win if the computer chooses rock
-            // if the player chooses rock they win if the computer chooses scissors
-            // if the player chooses scissors they win if the computer chooses paper
-            // otherwise they lose
+            console.log(game());
 
-            // (2)
-            // if the combination is rock and scissors, read 'rock blunts scissors'
-            // if the combination is scissors and paper, read 'scissors cut paper'
-            // if the combination is paper and rock, read 'paper wraps rock'
-            // OR
-            // find out the winning variable and put it first
-            // find out the losing variable and put it second
+            // Pseudo-Code (copied from notebook):
+
+            // To play a round:
+
+            // Declare the winner as the computer
+            // Declare the winning choice as the computer's choice
+            // Declare the losing choice as the computer's choice
+            // If the two choices are the same, RETURN a tie;
+            // Otherwise if the player has rock to the computer's scissors,
+            //                             scissors to the computer's paper or
+            //                             paper to the computer's rock,
+            //     change the winner to the player,
+            //     change the winning choice to the player's choice,
+            //     change the losing choice to the computer's choice and
+            //     give the player a point;
+            // Otherwise give the computer a point.
+            // RETURN the winner, the winning choice and the losing choice.
+
+            // To play a game:
+
+            // Declare the scores as 0
+            // -- Repeat 5 times --
+            // DISPLAY the round no.
+            // Ask the player for a choice
+            // Choose for the computer*
+            // DISPLAY the player's choice
+            // DISPLAY the computer's choice
+            // Play a round and DISPLAY the outcome
+            // DISPLAY the scores
+            // --------------------
+            // Once 5 rounds have been played, calculate and DISPLAY the winner
+
+            // *To choose for the computer:
+
+            // Choose a random number from 1 to 3
+            // Make 1 = rock,
+            //      2 = paper and
+            //      3 = scissors
             
-
-            // if the player and computer choose the same option, it's a tie, otherwise:
-            // if the pairing is rock and scissors:
-            // - the player wins if they have the rock (and loses if not)
-            // - the end message reads "rock blunts scissors"
-            // if the pairing is scissors and paper:
-            // - the player wins if they have scissors (and loses if not)
-            // - the end message reads "scissors cut paper"
-            // if the pairing is paper and rock:
-            // - the player wins if they have paper (and loses if not)
-            // - the end message reads "scissors cut paper"
-
-            // (1) Display whether the player wins or loses
-            // (2) Display the combination of choices with the winning one first
-
-
-
-
-
-            //     let winner;
-            //     let ranking = ['rock', 'paper', 'scissors', 'rock'];
-            //     if (ranking.indexOf(playerSelectionLow) === ranking.indexOf(computerSelection)) {
-            //         return "It's a tie! You both chose " + computerSelection + ".";
-            //     } else if ((ranking.lastIndexOf(playerSelectionLow) - 1) === ranking.indexOf(computerSelection)) {
-            //         winner = playerSelectionLow;
-            //     } else if (ranking.indexOf(playerSelectionLow) + 1) === ranking.indexOf(computerSelection) {
-            //         winner = computerSelection
-            //     }
-            //     let win_lose = (winner === computerSelection) ? 'lose' : 'win';
-                
-            // }
-
         </script>
     </body>
 </html>
