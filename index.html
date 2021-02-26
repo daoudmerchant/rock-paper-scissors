@@ -3,8 +3,105 @@
     <head>
         <meta charset="UTF-8">
         <title>Rock Paper Scissors</title>
+        <style>
+            * {
+                text-align: center;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            h1 { font-size: 4em; }
+
+            h2 { font-size: 3em; }
+
+            h3 { font-size: 2em; }
+
+            table {
+                margin: 2em auto;
+                font-size: 1.5em;
+                width: 80%;
+            }
+
+            th, td {
+                border: 1px solid black;
+                padding-top: .5em;
+                padding-bottom: .5em;
+            }
+
+            th { font-size: larger; }
+
+            th[scope="row"] {
+                width: 20%;
+            }
+
+            #buttonContainer {
+                display: flex;
+                justify-content: center;
+            }
+
+            .playButton {
+                font-size: 2em;
+                margin: 1em;
+                width: 8em;
+                height: 2em;
+            }
+
+            #reset {
+                position: absolute;
+                right: 5%;
+                bottom: 5%;
+                font-size: 1em;
+            }
+
+        </style>
     </head>
     <body>
+        <h1>Rock, paper or scissors?</h1>
+        <h2 id="roundCount"></h2>
+        <div id="buttonContainer">
+            <button id="rock" class="playButton">Rock</button>
+            <button id="paper" class="playButton">Paper</button>
+            <button id="scissors" class="playButton">Scissors</button>
+        </div>
+        <table>
+            <colgroup></colgroup>
+            <colgroup span="5"></colgroup>
+            <tr>
+                <th scope="row">Round</th>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+                <th scope="col">3</th>
+                <th scope="col">4</th>
+                <th scope="col">5</th>
+            </tr>
+            <tr>
+                <th scope="row">&#128578</th>
+                <td id="player1"></td>
+                <td id="player2"></td>
+                <td id="player3"></td>
+                <td id="player4"></td>
+                <td id="player5"></td>
+            </tr>
+            <tr>
+                <th scope="row">&#129302</th>
+                <td id="computer1"></td>
+                <td id="computer2"></td>
+                <td id="computer3"></td>
+                <td id="computer4"></td>
+                <td id="computer5"></td>
+            </tr>
+            <tr>
+                <th scope="row">&#127942</th>
+                <td id="winner1"></td>
+                <td id="winner2"></td>
+                <td id="winner3"></td>
+                <td id="winner4"></td>
+                <td id="winner5"></td>
+            </tr>
+        </table>
+        <h2 id="verdictEmoji">Emoji</h2>
+        <h3 id="verdict">asdfl;kj</h3>
+        <button id="reset">Reset</button>
+
         <script>
 
             // 'Helper' Functions
@@ -18,92 +115,61 @@
                 else { return 'scissors' }
             }
 
-            // 5 round game function
-
+            function decideWinner(playerSelection, computerSelection) {
+                if (playerSelection === computerSelection) {
+                    return "tie"
+                } else if (playerSelection === 'rock' && computerSelection === 'scissors' ||
+                           playerSelection === 'scissors' && computerSelection === 'paper' ||
+                           playerSelection === 'paper' && computerSelection === 'rock') {
+                    return "win"
+                } else { return "lose" };
+            }
+            
+            function declareVictor(playerScore, computerScore) {
+                if (playerScore > computerScore) { console.log("You win the game!") } // Make return values later
+                    else if (playerScore < computerScore) { console.log("You lose the game!") }
+                    else { console.log("You both tie the game!") }
+            }
+            
             function game() {
-
-                // Round function
-
-                function playRound(playerSelection, computerSelection) {
-                    let win_lose = 'lose';
-                    let winner = capitalize(computerSelection)
-                    let loser = playerSelection;
-                    if (playerSelection === computerSelection) {
-                        return "It's a tie! You both chose " + computerSelection + ".";
-                    } else if (playerSelection === 'rock' && computerSelection === 'scissors' ||
-                            playerSelection === 'scissors' && computerSelection === 'paper' ||
-                            playerSelection === 'paper' && computerSelection === 'rock') {
-                        win_lose = 'win';
-                        winner = capitalize(playerSelection);
-                        loser = computerSelection;
+                
+                function declareWinner(winner) {
+                    if (winner === "tie") { return "You tie this round!" };
+                    if (winner === "win") {
                         playerScore += 1;
+                        return "You win!";
                     } else {
                         computerScore += 1;
+                        return "You lose!";
                     }
-                    return `You ${win_lose} this round! ${winner} beats ${loser}.`;
                 }
 
-                //
-
+                console.clear(); // make function clearBoard() to empty table and remove statements below
+                let roundCount = 1;
+                console.log("Round " + roundCount);
                 let playerScore = 0, computerScore = 0;
-                let roundCount;
-                for (roundCount = 1; roundCount <=5; roundCount++) {
-                    console.log('Round ' + roundCount + ':');
-                    const playerSelection = (prompt('Rock, paper or scissors?', '')).toLowerCase();
-                    const computerSelection = computerPlay();
-                    console.log("You chose " + playerSelection);
-                    console.log("The computer chooses " + computerSelection);
-                    console.log(playRound(playerSelection, computerSelection));
-                    console.log(`Score:\nPlayer: ${playerScore}\nComputer: ${computerScore}`);
-                }
-                let overallWinner = (playerScore > computerScore) ? "You" : "The computer";
-                let s = (overallWinner === "The computer") ? "s" : "";
-                return `${overallWinner} win${s} the game of ${roundCount - 1} rounds!`
+                let playerSelection, computerSelection;
+                const buttons = document.querySelectorAll('.playButton');
+                buttons.forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        playerSelection = event.target.id;
+                        console.log(playerSelection);
+                        computerSelection = computerPlay();
+                        console.log(computerSelection);
+                        let winner = decideWinner(playerSelection, computerSelection);
+                        console.log(declareWinner(winner));
+                        if (roundCount < 5) {
+                            roundCount += 1;
+                            console.log("Round " + roundCount);
+                        } else { declareVictor(playerScore, computerScore) };
+                    })
+                });
             }
-
-            // Function invocation (to console)
-
-            console.log(game());
-
-            // Pseudo-Code (copied from notebook):
-
-            // To play a round:
-
-            // Declare the winner as the computer
-            // Declare the winning choice as the computer's choice
-            // Declare the losing choice as the computer's choice
-            // If the two choices are the same, RETURN a tie;
-            // Otherwise if the player has rock to the computer's scissors,
-            //                             scissors to the computer's paper or
-            //                             paper to the computer's rock,
-            //     change the winner to the player,
-            //     change the winning choice to the player's choice,
-            //     change the losing choice to the computer's choice and
-            //     give the player a point;
-            // Otherwise give the computer a point.
-            // RETURN the winner, the winning choice and the losing choice.
-
-            // To play a game:
-
-            // Declare the scores as 0
-            // -- Repeat 5 times --
-            // DISPLAY the round no.
-            // Ask the player for a choice
-            // Choose for the computer*
-            // DISPLAY the player's choice
-            // DISPLAY the computer's choice
-            // Play a round and DISPLAY the outcome
-            // DISPLAY the scores
-            // --------------------
-            // Once 5 rounds have been played, calculate and DISPLAY the winner
-
-            // *To choose for the computer:
-
-            // Choose a random number from 1 to 3
-            // Make 1 = rock,
-            //      2 = paper and
-            //      3 = scissors
             
-        </script>
+            game();
+            
+            // let reset = document.querySelector('#reset');
+            // reset.addEventListener("click", game());
+            </script>
     </body>
-</html>
+    </html>
