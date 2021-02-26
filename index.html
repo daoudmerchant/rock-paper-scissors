@@ -13,7 +13,7 @@
 
             h2 { font-size: 2em; }
 
-            h3 { font-size: 1.5em; }
+            h3 { font-size: 1.8em; }
 
             table {
                 margin: 2em auto;
@@ -41,6 +41,8 @@
                 display: flex;
                 justify-content: center;
             }
+
+            #verdictEmoji { font-size: 3em; }
 
             .playButton {
                 font-size: 2em;
@@ -103,8 +105,8 @@
                 <td id="winner5" class="result"></td>
             </tr>
         </table>
-        <h2 id="verdictEmoji">Emoji</h2>
-        <h3 id="verdict">asdfl;kj</h3>
+        <h2 id="verdictEmoji"></h2>
+        <h3 id="verdict"></h3>
         <button id="reset">New Game</button>
 
         <!-- &#9986 - Scissors emoji
@@ -114,15 +116,25 @@
         -->
 
         <script>
+            
+            // Emojis
+
+            const ROCK_EMOJI = String.fromCodePoint(0x1F91F);
+            const PAPER_EMOJI = String.fromCodePoint(0x1F4C4);
+            const SCISSORS_EMOJI = String.fromCodePoint(0x2702);
+            const PLAYER = String.fromCodePoint(0x1F642);
+            const COMPUTER = String.fromCodePoint(0x1F916);
+            const YOU_WIN = String.fromCodePoint(0x1F947);
+            const YOU_LOSE = String.fromCodePoint(0x1F4A9);
+            const YOU_TIE = String.fromCodePoint(0x1F454);
 
             // Starting values
 
             let roundCount = 1;
             let playerScore = 0, computerScore = 0;
             const round = document.querySelector('#roundCount');
-            const ROCK_EMOJI = String.fromCodePoint(0x1F91F);
-            const PAPER_EMOJI = String.fromCodePoint(0x1F4C4);
-            const SCISSORS_EMOJI = String.fromCodePoint(0x2702);
+            const verdictEmoji = document.querySelector('#verdictEmoji');
+            const verdict = document.querySelector('#verdict');
 
             // 'Helper' Functions
 
@@ -134,6 +146,8 @@
                 roundCount = 1;
                 playerScore = 0, computerScore = 0;
                 round.textContent = `Round ${roundCount}`;
+                verdictEmoji.textContent = "";
+                verdict.textContent = "";
             }
 
             function getEmoji(choice) {
@@ -164,26 +178,32 @@
                 } else if (playerSelection === 'rock' && computerSelection === 'scissors' ||
                            playerSelection === 'scissors' && computerSelection === 'paper' ||
                            playerSelection === 'paper' && computerSelection === 'rock') {
-                    return "win"
-                } else { return "lose" };
+                    return "player"
+                } else { return "computer" };
             }
             
             function declareVictor(playerScore, computerScore) {
-                if (playerScore > computerScore) { console.log("You win the game!") } // Make return values later
-                    else if (playerScore < computerScore) { console.log("You lose the game!") }
-                    else { console.log("You both tie the game!") }
+                if (playerScore > computerScore) {
+                    verdictEmoji.textContent = YOU_WIN;
+                    verdict.textContent = "Congratulations, you win the game!";
+                } else if (playerScore < computerScore) {
+                    verdictEmoji.textContent = YOU_LOSE;
+                    verdict.textContent = "Sorry, you lose the game..."
+                } else {
+                    verdictEmoji.textContent = YOU_TIE;
+                    verdict.textContent = "Looks like you both tie the game."
+                }
             }
             
             function declareWinner(winner) {
-
-                if (winner === "tie") { return "You tie this round!" };
-                if (winner === "win") {
+                let winnerCell = document.querySelector(`#winner${roundCount}`);
+                if (winner === "player") {
+                    winnerCell.textContent = PLAYER;
                     playerScore += 1;
-                    return "You win!";
-                } else {
+                } else if (winner === "computer") {
+                    winnerCell.textContent = COMPUTER;
                     computerScore += 1;
-                    return "You lose!";
-                }
+                } else { winnerCell.textContent = "-"}
             }
 
             function game() {
@@ -192,15 +212,19 @@
                 const buttons = document.querySelectorAll('.playButton');
                 buttons.forEach(button => {
                     button.addEventListener("click", (event) => {
-                        playerSelection = event.target.id;
-                        computerSelection = computerPlay();
-                        postResult(playerSelection, computerSelection);
-                        let winner = decideWinner(playerSelection, computerSelection);
-                        // console.log(declareWinner(winner));
+                        if (roundCount <= 5) {
+                            playerSelection = event.target.id;
+                            computerSelection = computerPlay();
+                            postResult(playerSelection, computerSelection);
+                            let winner = decideWinner(playerSelection, computerSelection);
+                            declareWinner(winner);
+                        }
                         if (roundCount < 5) {
                             roundCount += 1;
                             round.textContent = `Round ${roundCount}`;
-                        } else { declareVictor(playerScore, computerScore) };
+                        } else if (roundCount === 5) {
+                            declareVictor(playerScore, computerScore);
+                        };
                     })
                 });
             }
