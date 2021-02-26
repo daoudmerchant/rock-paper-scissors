@@ -33,6 +33,10 @@
                 width: 20%;
             }
 
+            #roundCells {
+                width: 3em;
+            }
+
             #buttonContainer {
                 display: flex;
                 justify-content: center;
@@ -65,7 +69,7 @@
         </div>
         <table>
             <colgroup></colgroup>
-            <colgroup span="5"></colgroup>
+            <colgroup span="5" id="roundCells"></colgroup>
             <tr>
                 <th scope="row">Round</th>
                 <th scope="col">1</th>
@@ -76,27 +80,27 @@
             </tr>
             <tr>
                 <th scope="row">&#128578</th>
-                <td id="player1"></td>
-                <td id="player2"></td>
-                <td id="player3"></td>
-                <td id="player4"></td>
-                <td id="player5"></td>
+                <td id="player1" class="result"></td>
+                <td id="player2" class="result"></td>
+                <td id="player3" class="result"></td>
+                <td id="player4" class="result"></td>
+                <td id="player5" class="result"></td>
             </tr>
             <tr>
                 <th scope="row">&#129302</th>
-                <td id="computer1"></td>
-                <td id="computer2"></td>
-                <td id="computer3"></td>
-                <td id="computer4"></td>
-                <td id="computer5"></td>
+                <td id="computer1" class="result"></td>
+                <td id="computer2" class="result"></td>
+                <td id="computer3" class="result"></td>
+                <td id="computer4" class="result"></td>
+                <td id="computer5" class="result"></td>
             </tr>
             <tr>
                 <th scope="row">&#127942</th>
-                <td id="winner1"></td>
-                <td id="winner2"></td>
-                <td id="winner3"></td>
-                <td id="winner4"></td>
-                <td id="winner5"></td>
+                <td id="winner1" class="result"></td>
+                <td id="winner2" class="result"></td>
+                <td id="winner3" class="result"></td>
+                <td id="winner4" class="result"></td>
+                <td id="winner5" class="result"></td>
             </tr>
         </table>
         <h2 id="verdictEmoji">Emoji</h2>
@@ -115,17 +119,27 @@
 
             let roundCount = 1;
             let playerScore = 0, computerScore = 0;
+            const round = document.querySelector('#roundCount');
+            const ROCK_EMOJI = String.fromCodePoint(0x1F91F);
+            const PAPER_EMOJI = String.fromCodePoint(0x1F4C4);
+            const SCISSORS_EMOJI = String.fromCodePoint(0x2702);
 
             // 'Helper' Functions
 
             let capitalize = (string) => (string.charAt(0)).toUpperCase() + string.slice(1);
 
             function clearBoard() {
-                console.clear();
+                const table = document.querySelectorAll('.result');
+                table.forEach((cell) => cell.textContent = "");
                 roundCount = 1;
                 playerScore = 0, computerScore = 0;
-                console.log("Round " + roundCount);
-                // empty table and victory statements
+                round.textContent = `Round ${roundCount}`;
+            }
+
+            function getEmoji(choice) {
+                if (choice === 'rock') { return ROCK_EMOJI };
+                if (choice === 'paper') { return PAPER_EMOJI };
+                if (choice === 'scissors') { return SCISSORS_EMOJI };
             }
 
             // Game functions
@@ -135,6 +149,13 @@
                 if (randomSelector === 1) { return 'rock' }
                 else if (randomSelector === 2) { return 'paper' }
                 else { return 'scissors' }
+            }
+
+            function postResult(playerSelection, computerSelection) {
+                let playerCell = document.querySelector(`#player${roundCount}`);
+                let computerCell = document.querySelector(`#computer${roundCount}`);
+                playerCell.textContent = getEmoji(playerSelection);
+                computerCell.textContent = getEmoji(computerSelection);
             }
 
             function decideWinner(playerSelection, computerSelection) {
@@ -154,6 +175,7 @@
             }
             
             function declareWinner(winner) {
+
                 if (winner === "tie") { return "You tie this round!" };
                 if (winner === "win") {
                     playerScore += 1;
@@ -171,14 +193,13 @@
                 buttons.forEach(button => {
                     button.addEventListener("click", (event) => {
                         playerSelection = event.target.id;
-                        console.log(playerSelection);
                         computerSelection = computerPlay();
-                        console.log(computerSelection);
+                        postResult(playerSelection, computerSelection);
                         let winner = decideWinner(playerSelection, computerSelection);
-                        console.log(declareWinner(winner));
+                        // console.log(declareWinner(winner));
                         if (roundCount < 5) {
                             roundCount += 1;
-                            console.log("Round " + roundCount);
+                            round.textContent = `Round ${roundCount}`;
                         } else { declareVictor(playerScore, computerScore) };
                     })
                 });
