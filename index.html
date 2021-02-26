@@ -9,11 +9,11 @@
                 font-family: Arial, Helvetica, sans-serif;
             }
 
-            h1 { font-size: 4em; }
+            h1 { font-size: 3em; }
 
-            h2 { font-size: 3em; }
+            h2 { font-size: 2em; }
 
-            h3 { font-size: 2em; }
+            h3 { font-size: 1.5em; }
 
             table {
                 margin: 2em auto;
@@ -56,7 +56,8 @@
     </head>
     <body>
         <h1>Rock, paper or scissors?</h1>
-        <h2 id="roundCount"></h2>
+        <h2>Best of 5 rounds</h2>
+        <h3 id="roundCount"></h3>
         <div id="buttonContainer">
             <button id="rock" class="playButton">Rock</button>
             <button id="paper" class="playButton">Paper</button>
@@ -100,13 +101,34 @@
         </table>
         <h2 id="verdictEmoji">Emoji</h2>
         <h3 id="verdict">asdfl;kj</h3>
-        <button id="reset">Reset</button>
+        <button id="reset">New Game</button>
+
+        <!-- &#9986 - Scissors emoji
+             &#128196 - Paper (document) emoji
+             &#128240 - (news)paper emoji
+             &#129311 - Rock (hand) emoji
+        -->
 
         <script>
+
+            // Starting values
+
+            let roundCount = 1;
+            let playerScore = 0, computerScore = 0;
 
             // 'Helper' Functions
 
             let capitalize = (string) => (string.charAt(0)).toUpperCase() + string.slice(1);
+
+            function clearBoard() {
+                console.clear();
+                roundCount = 1;
+                playerScore = 0, computerScore = 0;
+                console.log("Round " + roundCount);
+                // empty table and victory statements
+            }
+
+            // Game functions
 
             function computerPlay() {
                 let randomSelector = Math.floor(Math.random() * 3) + 1;
@@ -131,23 +153,19 @@
                     else { console.log("You both tie the game!") }
             }
             
-            function game() {
-                
-                function declareWinner(winner) {
-                    if (winner === "tie") { return "You tie this round!" };
-                    if (winner === "win") {
-                        playerScore += 1;
-                        return "You win!";
-                    } else {
-                        computerScore += 1;
-                        return "You lose!";
-                    }
+            function declareWinner(winner) {
+                if (winner === "tie") { return "You tie this round!" };
+                if (winner === "win") {
+                    playerScore += 1;
+                    return "You win!";
+                } else {
+                    computerScore += 1;
+                    return "You lose!";
                 }
+            }
 
-                console.clear(); // make function clearBoard() to empty table and remove statements below
-                let roundCount = 1;
-                console.log("Round " + roundCount);
-                let playerScore = 0, computerScore = 0;
+            function game() {
+                clearBoard();
                 let playerSelection, computerSelection;
                 const buttons = document.querySelectorAll('.playButton');
                 buttons.forEach(button => {
@@ -168,8 +186,8 @@
             
             game();
             
-            // let reset = document.querySelector('#reset');
-            // reset.addEventListener("click", game());
+            let reset = document.querySelector('#reset');
+            reset.addEventListener("click", () => clearBoard());
             </script>
     </body>
     </html>
