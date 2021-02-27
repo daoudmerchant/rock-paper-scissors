@@ -109,19 +109,13 @@
         <h3 id="verdict"></h3>
         <button id="reset">New Game</button>
 
-        <!-- &#9986 - Scissors emoji
-             &#128196 - Paper (document) emoji
-             &#128240 - (news)paper emoji
-             &#129311 - Rock (hand) emoji
-        -->
-
         <script>
             
             // Emojis
 
-            const ROCK_EMOJI = String.fromCodePoint(0x1F91F);
-            const PAPER_EMOJI = String.fromCodePoint(0x1F4C4);
-            const SCISSORS_EMOJI = String.fromCodePoint(0x2702);
+            const ROCK_EMOJI = String.fromCodePoint(0x270A); // 0x1F91F
+            const PAPER_EMOJI = String.fromCodePoint(0x270B); // 0x1F4C4
+            const SCISSORS_EMOJI = String.fromCodePoint(0x270C); // 0x2702
             const PLAYER = String.fromCodePoint(0x1F642);
             const COMPUTER = String.fromCodePoint(0x1F916);
             const YOU_WIN = String.fromCodePoint(0x1F947);
@@ -224,6 +218,7 @@
                             round.textContent = `Round ${roundCount}`;
                         } else if (roundCount === 5) {
                             declareVictor(playerScore, computerScore);
+                            roundCount += 1;
                         };
                     })
                 });
